@@ -1,0 +1,9 @@
+<ng-container *ngIf="!isLoading() && bpDataService.getCatalogueLine()">
+    <negotiation-request *ngIf="!bpDataService.quotation && bpDataService.bpStartEvent.userRole === 'buyer'">
+    </negotiation-request>
+    <negotiation-response *ngIf="bpDataService.quotation">
+    </negotiation-response>
+</ng-container>
+
+<call-status *ngIf="isLoading()" [callStatus]="initCallStatus" [large]="true">
+</call-status>

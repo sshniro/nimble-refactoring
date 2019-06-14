@@ -1,0 +1,12 @@
+
+export const TABS = {
+    WELCOME: "WELCOME",
+    PURCHASES: "PURCHASES",
+    SALES: "SALES",
+    CATALOGUE: "CATALOGUE",
+    FAVOURITE: "FAVOURITE",
+    COMPARE:"COMPARE",
+    PERFORMANCE:"PERFORMANCE"
+};
+
+export const PAGE_SIZE = 5;

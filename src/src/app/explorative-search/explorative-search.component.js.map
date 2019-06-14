@@ -1,0 +1,1 @@
+{"version":3,"file":"explorative-search.component.js","sourceRoot":"","sources":["explorative-search.component.ts"],"names":[],"mappings":";;;;;;;;AAAA;;;;;;GAMG;AACH,sCAA0C;AAQ1C;IAAA;IAEA,CAAC;IAFY,0BAA0B;QANtC,gBAAS,CAAC;YACP,QAAQ,EAAE,gBAAgB;YAC1B,WAAW,EAAE,qCAAqC;YAClD,SAAS,EAAE,CAAC,oCAAoC,CAAC;SACpD,CAAC;OAEW,0BAA0B,CAEtC;IAAD,iCAAC;CAAA,AAFD,IAEC;AAFY,gEAA0B"}

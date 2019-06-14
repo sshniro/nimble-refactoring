@@ -1,0 +1,40 @@
+/*Column Highlighting*/
+/*table {*/
+    /*overflow: hidden;*/
+/*}*/
+
+/*td, th {*/
+    /*position: relative;*/
+/*}*/
+/*!*td:hover::after,*!*/
+/*!*th:hover::after {*!*/
+    /*!*content: "";*!*/
+    /*!*position: absolute;*!*/
+    /*!*background-color: rgba(0,0,0,0.075);*!*/
+    /*!*left: 0;*!*/
+    /*!*top: -5000px;*!*/
+    /*!*height: 10000px;*!*/
+    /*!*width: 100%;*!*/
+    /*!*z-index: -1;*!*/
+/*!*}*!*/
+
+/*For Unicode Check mark which is compatible on all browsers*/
+.checkMark:before { content: "\2714" }
+
+.disabled-section {
+    background-color: #e9ecef;
+    color: #A9A9A9;
+}
+.fixed {
+    position:sticky;
+    z-index: 999;
+    top:0;
+}
+
+.fixed-header {
+    background-color: #fff;
+}
+
+.selected-row {
+    background-color: #d6d8db !important;
+}

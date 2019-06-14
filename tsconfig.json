@@ -9,7 +9,8 @@
     "noImplicitAny": true,
     "suppressImplicitAnyIndexErrors": true,
     "lib": ["es6", "dom"],
-    "typeRoots": ["node_modules/@types"]
+    "typeRoots": ["node_modules/@types"],
+    "noImplicitAny": false
   },
   "exclude": [
     "node_modules",

@@ -1,0 +1,44 @@
+<div class="card facet">
+    <!-- Header -->
+    <div class="card-header d-flex">
+        <div>{{title}}</div>
+
+        <div class="ml-auto" [ngClass]="{'clickable':!loading,'disabled':loading}" (click)="triggerCriteriaChanged.next()">
+            <i class="fa fa-sync-alt"></i>
+        </div>
+    </div>
+
+    <div class="mt-1 mb-1">
+
+      <!-- Loading -->
+      <div *ngIf="loading">
+          <div class="ml-2 mr-2 mt-1 mb-1"><img src="../../assets/images/form_loader.gif"/></div>
+      </div>
+
+      <!-- No results -->
+      <div *ngIf="noResults()">
+          <div class="ml-2 mr-2 mt-1 mb-1">No results</div>
+      </div>
+
+      <!-- boolean data type -->
+      <div *ngIf="dataType == 'boolean' && !loading" class="filter-option ml-2 mr-2 mt-1 mb-1"
+          (click)="booleanValue = !booleanValue; booleanValueChanged.next(booleanValue);">
+          <input type="checkbox"
+                  class="mr-2"
+                  [checked]="booleanValue">
+      </div>
+
+      <!-- string data type -->
+      <ng-container *ngIf="dataType == 'string' && !loading">
+          <div *ngFor="let value of stringValues"
+              class="filter-option ml-2 mr-2 mt-1 mb-1"
+              (click)="selectStringValue(value)">
+              <input type="checkbox"
+                      class="mr-2"
+                      [checked]="selectedStringValues.indexOf(value) != -1">
+              <span>{{value}}</span>
+          </div>
+      </ng-container>
+
+    </div>
+</div>

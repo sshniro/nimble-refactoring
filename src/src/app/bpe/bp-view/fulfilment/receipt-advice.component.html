@@ -1,0 +1,79 @@
+<ng-container *ngIf="receiptAdvice">
+
+    <div class="row title-row">
+        <div class="col-6"><h4>Dispatch Advice</h4></div>
+        <div class="col-6"><h4>Receipt Advice</h4></div>
+    </div>
+
+    <div class="row content-row bg-light">
+        <div class="col-6">
+            <!-- Dispatched Quantity -->
+            <quantity-input presentationMode="view" [disableQuantityUnit]="true"
+                label="Dispatched Quantity" [quantity]="dispatchAdvice.despatchLine[0].deliveredQuantity">
+            </quantity-input>
+        </div>
+        <div class="col-6">
+            <!-- Rejected Quantity -->
+            <quantity-input [disabled]="isLoading() || isReadOnly()" [disableQuantityUnit]="true"
+                label="Rejected Quantity" [quantity]="receiptAdvice.receiptLine[0].rejectedQuantity">
+            </quantity-input>
+        </div>
+    </div>
+
+
+    <div class="row content-row">
+        <div class="col-6">
+            <!-- Shipment -->
+            <shipment-input [shipment]="dispatchAdvice.despatchLine[0].shipment[0]" presentationMode="view">
+            </shipment-input>
+        </div>
+        <div class="col-6">
+            <!-- Reject Reason -->
+            <text-input label="Reject Reason" [disabled]="isLoading() || isReadOnly()" 
+                [(text)]="receiptAdvice.receiptLine[0].rejectReason[0]" rows="6">
+            </text-input>
+        </div>
+    </div>
+
+
+    <!-- Notes -->
+    <h5>Notes and Additional Files</h5>
+    <div class="row content-row bg-light">
+        <div class="col-6">
+            <note-file-view [notes]="dispatchAdvice.note"
+                       [documents]="dispatchAdvice.additionalDocumentReference"
+                       [firstCol]="'col-4'"
+                       [lastCol]="'col-8'"
+                       [label]="'Supplier\'s Note'"></note-file-view>
+        </div>
+        <div class="col-6">
+            <note-file-view [notes]="receiptAdvice.note"
+                       [documents]="receiptAdvice.additionalDocumentReference"
+                       [firstCol]="'col-4'"
+                       [lastCol]="'col-8'"
+                       [readonly]="isLoading() || isReadOnly()"
+                       [label]="'Customer\'s Note'"></note-file-view>
+        </div>
+    </div>
+
+
+    <!-- Actions -->
+    <div class="row actions-row" *ngIf="userRole === 'buyer'">
+        <div class="col-8 call-status-col"><call-status [callStatus]="callStatus"></call-status></div>
+        <div class="col-2">
+            <button class="btn btn-secondary action" [disabled]="isLoading()" (click)="onBack()">Back</button>
+        </div>
+        <div class="col-2">
+            <button class="btn btn-primary action" [disabled]="isLoading() || isReadOnly()" (click)="onSendReceiptAdvice()">
+                {{ isReadOnly() ? "Advice Sent" : "Send advice" }}
+            </button>
+        </div>
+    </div>
+
+    <div class="row actions-row" *ngIf="userRole === 'seller'">
+        <div class="col-10 call-status-col"><call-status [callStatus]="callStatus"></call-status></div>
+        <div class="col-2">
+            <button class="btn btn-secondary action" [disabled]="isLoading()" (click)="onBack()">Back</button>
+        </div>
+    </div>
+</ng-container>

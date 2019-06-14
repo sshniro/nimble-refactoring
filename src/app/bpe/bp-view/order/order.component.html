@@ -1,0 +1,329 @@
+<call-status [callStatus]="initCallStatus"></call-status>
+
+<ng-container *ngIf="isReady()">
+    <div class="row title-row">
+        <div class="col-6"><h4>Order Details</h4></div>
+        <div class="col-6"><h4>Delivery Details</h4></div>
+    </div>
+
+    <div class="row content-row">
+        <div class="col-6">
+            <text-input presentationMode="view" label="Warranty"
+                [text]="getWarrantyPeriodText()" labelClass="col-4" valueClass="col-8">
+            </text-input>
+        </div>
+        <div class="col-6">
+            <text-input presentationMode="view" label="Delivery Period"
+                [text]="getDeliveryPeriodText()" labelClass="col-4" valueClass="col-8">
+            </text-input>
+        </div>
+    </div>
+
+    <div class="row content-row">
+        <div class="col-6">
+            <text-input presentationMode="view" label="Incoterms"
+                [text]="getIncoterm()" labelClass="col-4" valueClass="col-8">
+            </text-input>
+        </div>
+        <div class="col-6">
+            <text-input presentationMode="view" label="Street Name"
+                [text]="address.streetName" labelClass="col-4" valueClass="col-8">
+            </text-input>
+        </div>
+    </div>
+
+    <div class="row content-row">
+        <div class="col-6">
+            <text-input presentationMode="view" label="Quantity"
+                [text]="getQuantityText()" labelClass="col-4" valueClass="col-8">
+            </text-input>
+        </div>
+        <div class="col-6">
+            <text-input presentationMode="view" label="Building Number"
+                [text]="address.buildingNumber" labelClass="col-4" valueClass="col-8">
+            </text-input>
+        </div>
+    </div>
+
+    <div class="row content-row">
+        <div class="col-6">
+            <text-input presentationMode="view" label="Total Price"
+                [text]="getTotalPriceText()" labelClass="col-4" valueClass="col-8">
+            </text-input>
+        </div>
+        <div class="col-6">
+            <text-input presentationMode="view" label="City / Town"
+                [text]="address.cityName" labelClass="col-4" valueClass="col-8">
+            </text-input>
+        </div>
+    </div>
+
+    <div class="row content-row">
+        <div class="col-6">
+            <div class="row" *ngIf="config.dataChannelsEnabled">
+                <div class="col-4">
+                    <strong>Data Monitoring Service:</strong>
+                </div>
+                <div class="col-8">
+                    <span *ngIf="!fetchDataMonitoringStatus.isDisplayed()">{{ dataMonitoringDemanded ? "Yes" : "No" }}</span>
+                    <call-status [callStatus]="fetchDataMonitoringStatus"></call-status>
+                </div>
+            </div>
+        </div>
+        <div class="col-6">
+            <text-input presentationMode="view" label="State / Province"
+                [text]="address.region" labelClass="col-4" valueClass="col-8">
+            </text-input>
+        </div>
+    </div>
+
+    <div class="row content-row">
+        <div class="col-6">
+            <text-input presentationMode="view" label="Payment Means"
+                [text]="getPaymentMeans()" labelClass="col-4" valueClass="col-8">
+            </text-input>
+        </div>
+        <div class="col-6">
+          <text-input presentationMode="view" label="Postal Code"
+              [text]="address.postalZone" labelClass="col-4" valueClass="col-8">
+          </text-input>
+        </div>
+    </div>
+
+    <div class="row content-row">
+        <div class="col-6">
+            <text-input presentationMode="view" label="Payment Terms"
+                [text]="paymentTermsWrapper.paymentTerm" labelClass="col-4" valueClass="col-8">
+            </text-input>
+        </div>
+        <div class="col-6">
+          <text-input presentationMode="view" label="Country"
+              [text]="address.country.name.value" labelClass="col-4" valueClass="col-8">
+          </text-input>
+        </div>
+    </div>
+
+
+
+    <hr>
+
+
+    <!-- Notes -->
+    <h5>Notes and Additional Files</h5>
+    <div class="row content-row" *ngIf="isReady()">
+        <div class="col-6">
+            <note-file-view [notes]="order.note"
+                       [label]="'Customer\'s Note'"
+                       [documents]="order.additionalDocumentReference"
+                       [firstCol]="'col-4'"
+                       [lastCol]="'col-8'"
+                       [readonly]="isReadOnly() || isSeller()"></note-file-view>
+        </div>
+        <div class="col-6">
+            <note-file-view *ngIf="orderResponse"
+                       [notes]="orderResponse.note"
+                       [documents]="orderResponse.additionalDocumentReference"
+                       [label]="'Supplier\'s Note'"
+                       [firstCol]="'col-4'"
+                       [lastCol]="'col-8'"
+                       [readonly]="isReadOnly()"></note-file-view>
+        </div>
+    </div>
+
+
+    <hr>
+
+
+    <!-- Contract Preview -->
+    <div *ngIf="isReady()">
+        <div>
+            <contract [contract]="getOrderContract()"></contract>
+        </div>
+        <div class="row">
+            <div class="col-6">
+                <terms-and-conditions [orderId]="order.id" [buyerPartyId]="getPartyId(buyerParty)"
+                                      [selectedIncoterm]="order.orderLine[0].lineItem.deliveryTerms.incoterms"
+                                      [selectedTradingTerms]="order.paymentTerms.tradingTerms"
+                                      [sellerPartyId]="getPartyId(sellerParty)" [readOnly]="true" [documentType]="'order'" [termsAndConditions]="getTermAndConditionClauses()"></terms-and-conditions>
+            </div>
+            <div class="col-6">
+                <h4>
+                    Purchase Order
+                    <button class="btn btn-outline-dark" (click)="showPurchaseOrder = !showPurchaseOrder">
+                        <i class="fas fa-chevron-up fa-fw fa-lg mt-2" aria-hidden="true" *ngIf="showPurchaseOrder"></i>
+                        <i class="fas fa-chevron-down fa-fw fa-lg mt-2" aria-hidden="true" *ngIf="!showPurchaseOrder"></i>
+                    </button>
+                </h4>
+                <div *ngIf="showPurchaseOrder">
+                    <div class="row">
+                        <div class="col-3"><strong>Product Id:</strong></div>
+                        <div class="col-9">{{order.orderLine[0].lineItem.item.manufacturersItemIdentification.id}}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3"><strong>Quantity:</strong></div>
+                        <div class="col-9">{{getQuantityText()}}</div>
+                    </div>
+                    <div class="row">
+                        <div class="col-3"><strong>Total Price:</strong></div>
+                        <div class="col-9">{{getTotalPriceText()}}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</ng-container>
+
+
+<!-- EPC Codes -->
+<ng-container *ngIf="isReady() && isOrderCompleted() && trackAndTraceDetailsExists()">
+
+    <hr>
+
+    <h2>EPC Codes</h2>
+
+    <call-status [callStatus]="initEpcCodesCallStatus"></call-status>
+
+    <ng-container *ngIf="epcCodes">
+
+        <div class="row">
+
+          <!--List of codes -->
+          <div class="{{ isSeller() ? 'col-9' : 'col-12' }}">
+              <div class="row mb-1" *ngFor="let code of epcCodes.codes; let i = index; trackBy:trackByFn">
+                <div class="{{ isSeller() ? 'col-9' : 'col-12' }}">
+                    <input type="text" class="form-control" [(ngModel)]="epcCodes.codes[i]" [disabled]="isBuyer()">
+                </div>
+                <div class="col-3" *ngIf="isSeller() && i > 0">
+                    <button class="btn btn-danger w-100" (click)="onDeleteEpcCode(i)">Delete</button>
+                </div>
+              </div>
+          </div>
+
+          <div *ngIf="isSeller()" class="col-1"></div>
+
+          <div *ngIf="isSeller()" class="col-2">
+
+            <!-- Add code -->
+            <div class="row">
+                <div class="col-12">
+                    <button class="btn btn-success w-100" (click)="onAddEpcCode()">Add</button>
+                </div>
+            </div>
+
+            <!-- Save -->
+            <div class="row">
+                <div class="col-12">
+                    <button class="btn btn-primary w-100 save-epc-btn" [disabled]="!areEpcCodesDirty()"
+                        (click)="onSaveEpcCodes()">Save</button>
+                </div>
+            </div>
+
+            <div class="row">
+              <div class="col-12 d-flex justify-content-end">
+                  <span class="align-self-center">
+                      <call-status [callStatus]="saveEpcCodesCallStatus"></call-status>
+                  </span>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+    </ng-container>
+</ng-container>
+
+<!-- Actions -->
+<ng-container *ngIf="isBuyer() && isReady()">
+
+    <hr>
+
+    <div class="row actions-row" *ngIf="!isReadOnly()">
+        <div class="col-8 call-status-col"><call-status [callStatus]="submitCallStatus"></call-status></div>
+        <div class="col-2">
+            <button class="btn btn-secondary action" [disabled]="isLoading()" (click)="onBack()">
+                Back
+            </button>
+        </div>
+        <div class="col-2">
+            <button *ngIf="!(processMetadata && processMetadata.isBeingUpdated)" class="btn btn-primary action" [disabled]="isLoading()" (click)="onOrder()">
+                Order
+            </button>
+            <button *ngIf="processMetadata && processMetadata.isBeingUpdated" class="btn btn-primary action" [disabled]="isLoading()" (click)="onOrderUpdate()">
+                Update Order
+            </button>
+        </div>
+    </div>
+
+    <div class="row actions-row" *ngIf="isReadOnly() && !isOrderCompleted()">
+        <div class="col-10 call-status-col"><call-status [callStatus]="submitCallStatus"></call-status></div>
+        <div class="col-2">
+            <button class="btn btn-secondary action" [disabled]="isLoading()" (click)="onBack()">
+                Back
+            </button>
+        </div>
+    </div>
+
+    <div class="row actions-row" *ngIf="isReadOnly() && isOrderCompleted()">
+        <div class="col-7 call-status-col"><call-status [callStatus]="submitCallStatus"></call-status></div>
+        <div class="col-2">
+            <button class="btn btn-secondary action" [disabled]="isLoading()" (click)="onBack()">
+                Back
+            </button>
+        </div>
+        <div class="col-3">
+            <button class="btn btn-primary action" [disabled]="isLoading() || isOrderRejected()" (click)="onDownloadContact()">
+                Download Contract
+            </button>
+        </div>
+    </div>
+</ng-container>
+
+<ng-container *ngIf="isSeller() && isReady()">
+
+    <hr>
+
+    <div class="row actions-row" *ngIf="!isOrderCompleted()">
+        <div class="col-6 call-status-col"><call-status [callStatus]="submitCallStatus"></call-status></div>
+        <div class="col-2">
+            <button class="btn btn-secondary action" [disabled]="isLoading()" (click)="onBack()">
+                Back
+            </button>
+        </div>
+        <div class="col-2">
+            <button class="btn btn-secondary action" [disabled]="isLoading()" (click)="onRespondToOrder(false)">
+                Reject
+            </button>
+        </div>
+        <div class="col-2">
+            <button class="btn btn-primary action" [disabled]="isLoading()" (click)="onRespondToOrder(true)">
+                Accept
+            </button>
+        </div>
+    </div>
+
+    <div class="row actions-row" *ngIf="isOrderCompleted()">
+        <div class="col-3 call-status-col"><call-status [callStatus]="submitCallStatus"></call-status></div>
+        <div class="col-2">
+            <button class="btn btn-secondary action" [disabled]="isLoading()" (click)="onBack()">
+                Back
+            </button>
+        </div>
+        <div class="col-2">
+            <button class="btn btn-secondary action" [disabled]="isLoading() || isOrderRejected()" (click)="onDownloadContact()">
+                Download Contract
+            </button>
+        </div>
+        <div class="col-3">
+            <button class="btn btn-primary action" [disabled]="isLoading() || isOrderRejected()" (click)="onSearchTransportService()">
+                Search for Transport Service Provider
+            </button>
+        </div>
+        <div class="col-2">
+            <button class="btn btn-primary action" [disabled]="isLoading() || isOrderRejected()" (click)="onDispatchOrder()">
+                Dispatch Order
+            </button>
+        </div>
+    </div>
+</ng-container>

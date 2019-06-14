@@ -1,0 +1,6 @@
+<ng-container *ngIf="line">
+    <dispatch-advice *ngIf="!showReceiptAdvice()">
+    </dispatch-advice>
+    <receipt-advice *ngIf="showReceiptAdvice()">
+    </receipt-advice>
+</ng-container>

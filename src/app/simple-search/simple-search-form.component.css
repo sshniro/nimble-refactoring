@@ -1,0 +1,71 @@
+.thumb {
+	max-height: 5rem;
+	max-width: 100%;
+}
+
+/*
+.card {
+	margin-bottom: 1rem !important;
+}
+*/
+
+.pagination {
+	margin-bottom: 0 !important;
+}
+
+.bg-primary-nimble {
+	background-color: #b77563;
+}
+
+.border-primary-nimble {
+	border-color: #b77563;
+}
+
+.badge-primary-nimble {
+	background-color: #b77563;
+	color: #fff;
+}
+
+.star {
+  position: relative;
+  display: inline-block;
+  color: #b0c4de;
+	font-size: 130%;
+}
+
+.star-b {
+	font-size: 170% !important;
+}
+
+.full {
+  color: #1e90ff;
+}
+
+.half {
+  position: absolute;
+  display: inline-block;
+  overflow: hidden;
+  color: #1e90ff;
+}
+
+.heart {
+  position: relative;
+  display: inline-block;
+  color: #d3d3d3;
+	font-size: 112%;
+}
+
+.heart-b {
+	font-size: 145% !important;
+}
+
+.full-heart {
+  color: red;
+}
+
+.half-heart {
+  position: absolute;
+  display: inline-block;
+  overflow: hidden;
+  color: red;
+}

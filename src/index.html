@@ -3,9 +3,32 @@
 <head>
     <base href="/">
     <meta charset="UTF-8">
-    <title>Restaurant Menu</title>
+    <title>Nimble</title>
+
+    <script src="node_modules/countries-list/dist/index.es5.min.js"></script>
 </head>
 <body>
-    <nimble-app></nimble-app>
+<div class="container-fluid">
+    <nimble-app>
+        <center>
+            <div id="sk-loading-icon">
+                <div class="sk-folding-cube">
+                    <div class="sk-cube1 sk-cube"></div>
+                    <div class="sk-cube2 sk-cube"></div>
+                    <div class="sk-cube4 sk-cube"></div>
+                    <div class="sk-cube3 sk-cube"></div>
+                </div>
+            </div>
+        </center>
+        <div style="position:absolute;width:90%;padding-left:10%;left:0;bottom:1rem;">
+            <center>
+                <small>
+                    In case you are experiencing errors loading this page:<br/>
+                    This platform has only been developed for and tested on Chrome and Firefox.
+                </small>
+            </center>
+        </div>
+    </nimble-app>
+</div>
 </body>
 </html>

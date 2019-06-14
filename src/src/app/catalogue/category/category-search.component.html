@@ -1,0 +1,317 @@
+<div *ngIf="isLogistics">
+    <p class="pb-3 nimble-title">Publish Logistics Service</p>
+</div>
+<div *ngIf="!isLogistics">
+    <p class="pb-3 nimble-title">Publish Product / Service</p>
+</div>
+<p>All published products / services must belong to at least one category, which will describe the product / service and help customers find your offering.</p>
+<div class="form-group row d-flex">
+    <div class="col-12 inline">
+        <form #categorySearch="ngForm" (ngSubmit)="onSearchCategory()" novalidate>
+        <!-- TODO: All Categories Search Goes Here-->
+            <div class="input-group">
+
+                <div ngbDropdown class="d-inline-block input-group-prepend">
+                    <button class="btn btn-outline-dark" type="button" id="allCategories" [disabled]="getCategoryDetailsStatus.isDisplayed()" ngbDropdownToggle>
+                        {{taxonomyId.replace("FurnitureOntology", "Furniture Sector")}} Categories
+                    </button>
+                    <div ngbDropdownMenu aria-labelledby="allCategories">
+                        <a *ngFor="let taxonomyID of taxonomyIDs" class="dropdown-item" (click)="changeTaxonomyId(taxonomyID)">{{taxonomyID.replace("FurnitureOntology", "Furniture Sector")}} Categories</a>
+                    </div>
+                </div>
+
+                <!-- End TODO: All Categories Search -->
+                <input type="text" class="form-control" name="inputCtrl" [(ngModel)]="categoryKeyword" [ngbTypeahead]="getSuggestions" [focusFirst]=false placeholder="Search Category..."/>
+                <div class="input-group-append">
+                    <button type="submit" class="btn btn-primary" [disabled]="!categorySearch.form.valid || getCategoryDetailsStatus.isDisplayed()">
+                        <i class="fa fa-search"></i> Search Categories
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div *ngIf="!pathToSelectedCategories">
+  <span class="text-muted">Click on a category to see its path.</span>
+</div>
+<div *ngIf="pathToSelectedCategories">
+    <span  *ngFor="let parentCat of pathToSelectedCategories.parents;let l=last" >
+        <span class="btn-link pointer" [ngClass]="{'disabled text-muted': getCategoryDetailsStatus.isDisplayed()}" (click)="scrollToDiv(parentCat.code,$event)">{{selectPreferredName(parentCat)}}</span>
+        <span *ngIf="!l">
+             >>
+        </span>
+    </span>
+</div>
+
+<div class="row mt-3 d-flex">
+    <div class="col-7 pr-0 pb-0">
+
+        <!-- Search Result List -->
+        <div *ngIf="!treeView" class="border" style="height:50vh; overflow-x: hidden; overflow-y: scroll;">
+            <table class="table table-hover mb-0">
+                <thead class="thead-light fixed">
+                    <th scope="col" style="color: #000;" class="p-3 border-top-0 border-bottom">Classification</th>
+                    <th scope="col" style="color: #000;" class="p-3 border-top-0 border-bottom">Name</th>
+                    <th scope="col" colspan="2" class="p-0 border-top-0 border-bottom text-right" style="vertical-align:top"><button class="btn btn-secondary my-2 mr-1" (click)="toggleTreeView()" [disabled]="getCategoryDetailsStatus.isDisplayed()">Browse</button></th>
+                </thead>
+                <tbody>
+                    <tr *ngIf="getCategoriesStatus.isDisplayed()">
+                        <call-status [callStatus]="getCategoriesStatus"></call-status>
+                    </tr>
+                    <tr *ngIf="!getCategoriesStatus.isDisplayed() && (!categories || categories.length == 0)">
+                        <td colspan="3">No results found.</td>
+                    </tr>
+                    <ng-container *ngIf="!getCategoriesStatus.isDisplayed() && categories">
+                        <tr *ngFor="let category of categories"
+                            (click)="getCategoryDetails(category,false)"
+                            class="pointer"
+                            [ngClass]="{'table-secondary': selectedCategory && category.code == selectedCategory.code, 'disabled': getCategoryDetailsStatus.isDisplayed()}">
+                            <td class="py-2 px-3 font-weight-light">{{category.taxonomyId}}</td>
+                            <td class="py-2 px-3">{{selectPreferredName(category)}}</td>
+                            <td></td>
+                            <td class="py-2 px-3">
+                                <span class="fa fa-fw mr-1 icon-secondary fa-sitemap" aria-hidden="true" (click)="getCategoryTree(category)"></span>
+                            </td>
+                        </tr>
+                    </ng-container>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Tree view activated -->
+        <div *ngIf="treeView" id="scrollDiv" class="border" style="height:50vh; overflow-x: hidden; overflow-y: scroll;">
+            <div class="fixed" style="background-color: #e9ecef;">
+                <div class="row">
+                    <div class="pr-0 col-3">
+                        <div class="thead-light-equivalent">
+                            <p class="mb-0 p-3">Categories</p>
+                        </div>
+                    </div>
+                    <div class="pl-0 col-9">
+                        <div class="thead-light-equivalent">
+                            <button *ngIf="categories" class="btn btn-secondary float-right my-2 mr-1" (click)="toggleTreeView()" [disabled]="getCategoryDetailsStatus.isDisplayed()">Back to Search Results</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div>
+
+                <div class="d-flex flex-column" style="height: 100px">
+
+                  <!-- Tabs -->
+                  <div>
+                    <ul class="nav nav-tabs pt-2 pl-1 pr-1">
+                      <li *ngIf="!isLogistics" class="nav-item">
+                        <a href id="TREE" class="nav-link" [ngClass]="{ active: selectedTab === 'TREE', 'disabled': getCategoryDetailsStatus.isDisplayed()}" (click)="onSelectTab($event)">
+                          {{taxonomyId == "All" ? "eClass": taxonomyId.replace("FurnitureOntology", "Furniture Sector")}}
+                        </a>
+                      </li>
+                      <li *ngIf="isLogistics" class="nav-item">
+                        <a href id="TREE" class="nav-link" [ngClass]="{ active: selectedTab === 'TREE', 'disabled': getCategoryDetailsStatus.isDisplayed()}" (click)="onSelectTab($event)">
+                            {{taxonomyId == "All" ? "eClass": taxonomyId.replace("FurnitureOntology", "Furniture Sector")}}
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a href id="FAVORITE" class="nav-link" [ngClass]="{ active: selectedTab === 'FAVORITE', 'disabled': getCategoryDetailsStatus.isDisplayed()}" (click)="onSelectTab($event)">
+                          Favorite
+                        </a>
+                      </li>
+                      <li class="nav-item">
+                        <a href id="RECENT" class="nav-link" [ngClass]="{ active: selectedTab === 'RECENT', 'disabled': getCategoryDetailsStatus.isDisplayed()}" (click)="onSelectTab($event)">
+                          Recently Used
+                        </a>
+                      </li>
+                    </ul>
+                  </div>
+
+                    <!-- Favorite Categories -->
+                    <div [hidden]="selectedTab !== 'FAVORITE'">
+                      <call-status [callStatus]="favoriteCategoriesStatus"></call-status>
+                      <div *ngIf="prefCats.length > 0 && !favoriteCategoriesStatus.isDisplayed()">
+                        <!--<h4 class="p-2">Favorite Categories</h4>-->
+                        <div *ngFor="let prefCat of prefCats" class="py-2 hover-row d-flex border-bottom pointer" style="padding-left:1rem"
+                              [ngClass]="{'selected-row': isAdSelected(prefCat), 'disabled': getCategoryDetailsStatus.isDisplayed()}" (click)="showAdDetails(prefCat);">
+                            {{prefCat.split("::")[2]}}
+                        </div>
+                      </div>
+                      <div *ngIf="prefCats.length == 0 && !favoriteCategoriesStatus.isDisplayed()">
+                        <!--<h4 class="p-2">Favorite Categories</h4>-->
+                        <div class="py-2 d-flex" style="padding-left:1rem">No favorite categories</div>
+                      </div>
+                    </div>
+
+                    <!-- Recent Categories -->
+                    <div [hidden]="selectedTab !== 'RECENT'">
+                      <call-status [callStatus]="recentCategoriesStatus"></call-status>
+                      <div *ngIf="recCats.length > 0 && !recentCategoriesStatus.isDisplayed()">
+                        <!--<h4 class="p-2">Recently Used Categories</h4>-->
+                        <div *ngFor="let recCat of recCats" class="py-2 hover-row d-flex border-bottom pointer" style="padding-left:1rem"
+                              [ngClass]="{'selected-row': isAdSelected(recCat), 'disabled': getCategoryDetailsStatus.isDisplayed()}" (click)="showAdDetails(recCat);">
+                            {{recCat.split("::")[2]}}
+                        </div>
+                      </div>
+                      <div *ngIf="recCats.length == 0 && !recentCategoriesStatus.isDisplayed()">
+                        <!--<h4 class="p-2">Recently Used Categories</h4>-->
+                        <div class="py-2 d-flex" style="padding-left:1rem">No recently used categories</div>
+                      </div>
+                    </div>
+
+                    <!-- Tree view (all categories) -->
+                    <div [hidden]="selectedTab !== 'TREE'">
+
+                      <call-status [callStatus]="getCategoriesStatus"></call-status>
+
+                      <!-- Logistic Service Categories -->
+                      <div *ngIf="isLogistics">
+                          <!--<h4 class="p-2">Logistics Categories</h4>-->
+                          <ng-container *ngIf="logisticsCategory && !getCategoriesStatus.isDisplayed()">
+                              <category-tree [category]="logisticsCategory" [border]="false" [parentCategories]="parentCategories" [numberOfSteps]="parentCategories ? parentCategories.parents.length-1 : 0"
+                                  (detailsEvent)="getCategoryDetails($event,false)" [selectedCategory]="selectedCategory"
+                                  [selectedCategories]="selectedCategories" [scrollToDivId]="scrollToDivId" [selectedPath]="pathToSelectedCategories" [loadingStatus]="getCategoryDetailsStatus.isDisplayed()"></category-tree>
+                          </ng-container>
+                          <div *ngIf="!logisticsCategory && !getCategoriesStatus.isDisplayed()" class="py-2 d-flex" style="padding-left:1rem">No available category</div>
+                      </div>
+
+                      <!-- Product Categories -->
+                      <div *ngIf="!isLogistics">
+                          <!--<h4 class="p-2">Product Categories</h4>-->
+                          <ng-container *ngIf="rootCategories && !getCategoriesStatus.isDisplayed()">
+                              <div *ngFor="let rootCategory of rootCategories">
+                                  <category-tree [category]="rootCategory" [parentCategories]="parentCategories" [numberOfSteps]="parentCategories ? parentCategories.parents.length-1 : 0"
+                                      (detailsEvent)="getCategoryDetails($event,false)" [selectedCategory]="selectedCategory"
+                                      [selectedCategories]="selectedCategories" [scrollToDivId]="scrollToDivId" [selectedPath]="pathToSelectedCategories" [loadingStatus]="getCategoryDetailsStatus.isDisplayed()"></category-tree>
+                              </div>
+                          </ng-container>
+                          <div *ngIf="!rootCategories && !getCategoriesStatus.isDisplayed()" class="py-2 d-flex" style="padding-left:1rem">No available category</div>
+                      </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Details Panel -->
+    <div class="col-5 pl-0">
+        <div class="border" [ngClass]="{'disabled-section': !selectedCategoryWithDetails && (callback || !submitted || error_detc)}" style="height:50vh; overflow-x: hidden; overflow-y: scroll;">
+
+            <!-- Loading/Error call status -->
+            <div *ngIf="getCategoryDetailsStatus.isDisplayed()" class="p-2 fixed-header">
+              <call-status [callStatus]="getCategoryDetailsStatus"></call-status>
+            </div>
+
+            <!-- Title + buttons -->
+            <div *ngIf="selectedCategoryWithDetails" class="d-flex flex-row fixed p-2" [ngClass]="{'fixed-header': selectedCategoryWithDetails}">
+                <h4 class="font-weight-bold" *ngIf="!selectedCategoryWithDetails">Details</h4>
+                <h4 class="font-weight-bold pr-2 mr-auto" *ngIf="selectedCategoryWithDetails">Details for {{selectPreferredName(selectedCategoryWithDetails)}}</h4>
+                <div *ngIf="selectedCategoryWithDetails">
+                    <button *ngIf="findCategoryInArray(selectedCategories, selectedCategoryWithDetails) === -1"
+                            class="btn btn-outline-primary float-right" (click)="addCategoryToSelected(selectedCategoryWithDetails)">
+                        Select Category
+                    </button>
+                    <button *ngIf="findCategoryInArray(selectedCategories, selectedCategoryWithDetails) > -1"
+                            class="btn btn-danger float-right" (click)="removeCategoryFromSelected(selectedCategoryWithDetails)">
+                        Unselect Category
+                    </button>
+                    <br/>
+
+                    <div class="float-right mt-1">
+                      <span *ngIf="!findPrefCat(selectedCategoryWithDetails)" class="star star-b pointer" [ngClass]="{'disabled':addFavoriteCategoryStatus.isLoading()}" (click)="addCategoryToFavorites(selectedCategoryWithDetails)" title="Add To Favorite">
+                        <span class="half" style="width:0%">&#9733;</span>&#9733;
+                      </span>
+                      <span *ngIf="findPrefCat(selectedCategoryWithDetails)" class="star star-b full pointer" [ngClass]="{'disabled':addFavoriteCategoryStatus.isLoading()}" (click)="removeCategoryFromFavorites(selectedCategoryWithDetails)" title="Remove From Favorite">
+                        <span class="half" style="width:100%">&#9733;</span>&#9733;
+                      </span>
+                    </div>
+
+                    <!--
+                    <button *ngIf="!findPrefCat(selectedCategoryWithDetails)" [disabled]="addFavoriteCategoryStatus.isLoading()"
+                            class="btn btn-primary mt-1 float-right" (click)="addCategoryToFavorites(selectedCategoryWithDetails)">
+                        Add To Favorite
+                    </button>
+                    <button *ngIf="findPrefCat(selectedCategoryWithDetails)" [disabled]="addFavoriteCategoryStatus.isLoading()"
+                            class="btn btn-danger mt-1 float-right" (click)="removeCategoryFromFavorites(selectedCategoryWithDetails)">
+                        Remove From Favorite
+                    </button>
+                    -->
+                    <div class="float-right mr-3 pt-2">
+                        <call-status [callStatus]="addFavoriteCategoryStatus"></call-status>
+                    </div>
+                </div>
+            </div>
+
+            <!-- No Category Details -->
+            <p *ngIf="!selectedCategoryWithDetails && !getCategoryDetailsStatus.isDisplayed()" class="align-self-center p-2 fixed-header">Click on a category to see its details.</p>
+
+            <!-- Details -->
+            <div *ngIf="selectedCategoryWithDetails" class="p-2">
+                <div *ngFor="let propName of propertyNames" class="my-1">
+                    <text-input *ngIf="selectedCategoryWithDetails[propName]" [visible]="selectedCategoryWithDetails[propName]" presentationMode="view" [label]="propName" labelClass="col-12 text-capitalize" labelMainClass="mb-0" valueClass="col-12" valueTextClass="mb-1 pl-3" [text]="getCategoryProperty(propName).replace('FurnitureOntology', 'Furniture Sector')"></text-input>
+                </div>
+                <div class="row">
+                    <div class="col-12 mb-0" *ngIf="selectedCategoryWithDetails.properties?.length > 0">
+                        <label>
+                            <strong>Properties: </strong>
+                        </label>
+                    </div>
+                </div>
+                <div *ngFor="let prop of selectedCategoryWithDetails.properties;let i = index;let l = last">
+                    <div class="row">
+                        <div class="col-8">
+                            <label>
+                                <p class="text-capitalize pl-3 mb-1">
+                                    {{selectPreferredName(prop)}}
+                                    <span *ngIf="isDefinitionOrRemarkAvailable(prop)" class="label label-default" title="{{getPropertyDefinitionOrRemark(prop)}}">
+                                        &#9432;
+                                    </span>
+                                </p>
+                            </label>
+                        </div>
+                        <div class="col-4">
+                            <label>
+                                <p class="mb-1 font-weight-light">
+                                    {{getPropertyType(prop)}}
+                                </p>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<hr>
+
+<!-- Actions: no permission -->
+<div *ngIf="!this.appComponent.checkRoles('catalogue')" class="form-group row">
+    <div class="col-12 d-flex align-items-center">
+        <p class="mt-1 mb-0 mr-3">You do not have permission to publish any products / services to your company catalogue.</p>
+    </div>
+</div>
+
+<!-- Selected Categories + Action -->
+<div *ngIf="this.appComponent.checkRoles('catalogue')" class="form-group row">
+    <div class="col-9 d-flex align-items-center">
+        <p class="mt-1 mb-0 mr-3 flex-shrink-0">Selected Categories: </p>
+        <p class="mt-1 mb-0 mr-3 flex-shrink-0" *ngIf="categoryService.selectedCategories.length === 0">None. Please add a category above to proceed.</p>
+        <div class="w-100 h-100 align-self-start">
+            <div class="d-flex flex-wrap">
+                <div *ngFor="let selectedCategory of categoryService.selectedCategories"
+                class="bordered d-flex align-items-center mx-1 my-1" title="{{selectedCategory.taxonomyId}}">
+                    <small class="p-0">{{selectPreferredName(selectedCategory)}}</small>
+                    <i class="fa fa-times-circle pl-1 text-red" placement="right" (click)="removeCategoryFromSelected(selectedCategory)"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-3 align-self-center">
+        <button class="btn btn-primary w-100 inline" [disabled]="categoryService.selectedCategories.length === 0"
+                (click)="navigateToPublishingPage()">
+            <span>
+                Continue With Selected Categories
+            </span>
+        </button>
+    </div>
+</div>

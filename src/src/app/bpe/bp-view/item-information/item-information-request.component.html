@@ -1,0 +1,57 @@
+<div class="row space-before">
+    <div class="col-3">
+        <strong class="font-weight-500"><label for="customFile">Requested filled technical data sheet(s):</label></strong>
+    </div>
+    <div class="col-9">
+        <file-input [disabled]="isLoading() || isRequestSent()" [multiple]="true" [presentationMode]="getPresentationMode()"
+            (onSelectFile)="onSelectItemSpecificationFile($event)" [binaryObjects]="files"
+            (onClearFile)="onUnselectItemSpecificationFile($event)">
+        </file-input>
+    </div>
+</div>
+
+<hr>
+
+<!--Notes-->
+<h5>Notes and Additional Files</h5>
+<note-file-view [notes]="request.note"
+           [label]="'Notes'"
+           [documents]="request.additionalDocumentReference"
+           [readonly]="isLoading() || isRequestSent()"></note-file-view>
+
+<hr>
+
+<!-- Actions -->
+<div *ngIf="!isRequestSent()" class="row actions-row">
+    <div class="col-2"></div>
+    <div *ngIf="!(processMetadata && processMetadata.isBeingUpdated)" class="col-4 call-status-col"><call-status [callStatus]="callStatus"></call-status></div>
+    <div *ngIf="processMetadata && processMetadata.isBeingUpdated" class="col-6 call-status-col"><call-status [callStatus]="callStatus"></call-status></div>
+    <div class="col-2">
+        <button class="btn btn-secondary action" [disabled]="isLoading()"(click)="onBack()">Back</button>
+    </div>
+    <div *ngIf="!(processMetadata && processMetadata.isBeingUpdated)" class="col-2">
+        <button class="btn btn-secondary action" [disabled]="isLoading()" (click)="onSkip()">
+            Skip
+        </button>
+    </div>
+    <div class="col-2">
+        <button *ngIf="!(processMetadata && processMetadata.isBeingUpdated)" class="btn btn-primary action" [disabled]="isLoading()||isEmpty()" (click)="onSendRequest()">
+            Send Request
+        </button>
+        <button *ngIf="processMetadata && processMetadata.isBeingUpdated" class="btn btn-primary action" [disabled]="isLoading()||isEmpty()" (click)="onUpdateRequest()">
+            Update Request
+        </button>
+    </div>
+</div>
+
+<div *ngIf="isRequestSent()" class="row actions-row">
+    <div class="col-8"></div>
+    <div class="col-2">
+        <button class="btn btn-secondary action" (click)="onBack()">Back</button>
+    </div>
+    <div class="col-2">
+        <button class="btn btn-primary action" disabled="true">
+            Request Sent
+        </button>
+    </div>
+</div>

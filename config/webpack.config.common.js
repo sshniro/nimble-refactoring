@@ -2,6 +2,7 @@
 
 const CleanWebpackPlugin   = require('clean-webpack-plugin');
 const HtmlWebpackPlugin    = require('html-webpack-plugin');
+const CopyWebpackPlugin    = require('copy-webpack-plugin');
 
 const helpers              = require('./helpers');
 const isDev                = process.env.NODE_ENV !== 'production';
@@ -42,6 +43,11 @@ module.exports = {
     },
 
     plugins: [
+        new CopyWebpackPlugin([{
+            from: './src/assets/images/',
+            to: 'images/'
+        }]),
+
         new CleanWebpackPlugin(
             helpers.root('dist'), { root: helpers.root(), verbose: true }),
 

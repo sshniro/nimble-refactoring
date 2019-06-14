@@ -1,0 +1,61 @@
+<catalogue-line-header [catalogueLine]="catalogueLine"
+                       [parentForm]="parentForm"
+                       [presentationMode]="presentationMode">
+</catalogue-line-header>
+
+
+
+<div *ngIf="presentationMode=='edit'" class="space-before space-after">
+	<button *ngIf="partyRole == 'Transport Service Provider'" class="btn btn-primary" (click)="changePartyRole('Manufacturer')">
+		Switch to manufacturer view
+	</button>
+	<button *ngIf="partyRole == 'Manufacturer' || partyRole == ''" class="btn btn-primary" (click)="changePartyRole('Transport Service Provider')">
+		Switch to logistics view
+	</button>
+</div>
+
+<ng-container *ngIf="(presentationMode == 'edit' && partyRole == '' || partyRole == 'Manufacturer') ||
+                     (presentationMode != 'edit' && catalogueLine.goodsItem.item.transportationServiceDetails == null)">
+    <ul class="nav nav-tabs">
+        <li class="nav-item pointer">
+            <a
+                    [ngClass]="{'nav-link': true, active: selectedTab === 'Product Details'}"
+                    (click)="selectedTab = 'Product Details'"
+                    i18n
+            >Details</a>
+        </li>
+
+        <li class="nav-item pointer">
+            <a
+                    [ngClass]="{'nav-link': true, active: selectedTab === 'Product Trading & Delivery Terms'}"
+                    (click)="selectedTab = 'Product Trading & Delivery Terms';"
+                    i18n
+            >Trading & Delivery Terms</a>
+        </li>
+    </ul>
+
+    <catalogue-line-details [hidden]="selectedTab !== 'Product Details'"
+                     [catalogueLine]="catalogueLine"
+                     [presentationMode]="presentationMode"
+                     [parentForm]="regularProductDetailsForm">
+    </catalogue-line-details>
+    <product-trading-details [hidden]="selectedTab !== 'Product Trading & Delivery Terms'"
+                             [parentForm]="regularProductDetailsForm"
+                             [catalogueLine]="catalogueLine"
+                             [presentationMode]="presentationMode">
+    </product-trading-details>
+</ng-container>
+
+<ng-container *ngIf="(presentationMode == 'edit' && partyRole == 'Transport Service Provider') ||
+                    (presentationMode != 'edit' && catalogueLine.goodsItem.item.transportationServiceDetails != null)">
+    <ul class="nav nav-tabs mb-3">
+        <li class="nav-item pointer">
+            <a class="nav-link active" i18n>Transportation Service Details</a>
+        </li>
+    </ul>
+
+    <transportation-service-details [catalogueLine]="catalogueLine"
+                                    [presentationMode]="presentationMode"
+                                    [parentForm]="transportationServiceDetailsForm">
+    </transportation-service-details>
+</ng-container>

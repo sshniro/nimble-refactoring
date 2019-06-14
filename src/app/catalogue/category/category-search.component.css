@@ -1,0 +1,63 @@
+.thead-light-equivalent {
+    vertical-align: bottom;
+    font-weight: 700;
+}
+
+.fixed {
+    position:sticky;
+    z-index: 999;
+    top:0;
+}
+
+.fixed-header {
+    background-color: #fff;
+}
+
+.disabled-section {
+    background-color: #fff;
+    color: #A9A9A9;
+}
+
+.hover-row:hover {
+    background-color: rgba(0,0,0,.075);
+}
+
+.selected-row {
+    background-color: #d6d8db !important;
+}
+
+.taxonomy {
+    padding: 0.20rem;
+}
+
+.taxonomyDiv {
+    padding-right: 0px;
+}
+
+.noLogisticCategory {
+    padding-top: 0.30rem;
+    padding-left: 0.20rem;
+}
+
+.star {
+  position: relative;
+  display: inline-block;
+  color: #b0c4de;
+	font-size: 130%;
+}
+
+.star-b {
+	font-size: 220% !important;
+  line-height: 110%;
+}
+
+.full {
+  color: #1e90ff;
+}
+
+.half {
+  position: absolute;
+  display: inline-block;
+  overflow: hidden;
+  color: #1e90ff;
+}
