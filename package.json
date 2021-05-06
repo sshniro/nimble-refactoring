@@ -43,7 +43,7 @@
     "path": "^0.12.7",
     "countries-list": "^2.4.x",
     "d3": "5.0.0",
-    "underscore": "^1.9.0"
+    "underscore": "^1.12.1"
   },
   "devDependencies": {
     "@ngtools/webpack": "~7.3",
