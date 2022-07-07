@@ -39,7 +39,7 @@
     "zone.js": "~0.8",
     "@types/underscore": "^1.8.8",
     "lunr": "^2.3.0",
-    "moment": "^2.22.x",
+    "moment": "^2.29.x",
     "path": "^0.12.7",
     "countries-list": "^2.4.x",
     "d3": "5.0.0",
